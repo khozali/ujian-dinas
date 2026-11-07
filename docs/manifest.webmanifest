@@ -1,0 +1,30 @@
+{
+  "name": "Bank Soal Ujian Dinas Tingkat I",
+  "short_name": "Ujian Dinas",
+  "description": "Latihan Ujian Dinas Tingkat I PNS Kemhan — bisa dipakai offline",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f6f2",
+  "theme_color": "#2f5d3a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

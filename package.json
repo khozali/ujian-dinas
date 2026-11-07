@@ -1,0 +1,16 @@
+{
+  "name": "bank-soal-ujian-dinas",
+  "version": "1.0.0",
+  "description": "Bank soal Ujian Dinas Tingkat I (Vue 3 + Node.js)",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node build.mjs && npx --yes serve dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.5.45"
+  },
+  "type": "module",
+  "private": true
+}

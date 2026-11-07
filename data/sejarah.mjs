@@ -1,0 +1,127 @@
+import { m, fromTable } from './_helpers.mjs';
+
+const manual = [
+  m('Ketua BPUPKI adalah ...', 'dr. K.R.T. Radjiman Wedyodiningrat', ['Ir. Soekarno', 'Drs. Mohammad Hatta', 'Mr. Soepomo'], 'BPUPKI diketuai dr. Radjiman Wedyodiningrat.'),
+  m('Ketua PPKI adalah ...', 'Ir. Soekarno', ['Drs. Mohammad Hatta', 'dr. Radjiman Wedyodiningrat', 'Mr. Achmad Soebardjo'], 'PPKI diketuai Ir. Soekarno dengan wakil Drs. Mohammad Hatta.'),
+  m('Sidang PPKI tanggal 18 Agustus 1945 menghasilkan keputusan, kecuali ...', 'Membentuk Badan Keamanan Rakyat', ['Mengesahkan UUD 1945', 'Memilih Presiden dan Wakil Presiden', 'Membentuk Komite Nasional untuk membantu Presiden sementara waktu'], 'BKR dibentuk dalam sidang PPKI 22 Agustus 1945.'),
+  m('Naskah Proklamasi dirumuskan di rumah ...', 'Laksamana Tadashi Maeda', ['Ir. Soekarno di Pegangsaan Timur 56', 'Djiaw Kie Siong di Rengasdengklok', 'Mr. Achmad Soebardjo'], 'Perumusan teks proklamasi dilakukan di rumah Laksamana Maeda, Jalan Imam Bonjol No. 1, Jakarta.'),
+  m('Naskah Proklamasi yang ditulis tangan oleh Soekarno kemudian diketik oleh ...', 'Sayuti Melik', ['B.M. Diah', 'Soekarni', 'Latief Hendraningrat'], 'Sayuti Melik mengetik naskah proklamasi.'),
+  m('Bendera Merah Putih yang dikibarkan pada saat proklamasi dijahit oleh ...', 'Fatmawati', ['S.K. Trimurti', 'Rasuna Said', 'Dewi Sartika'], 'Bendera Pusaka dijahit oleh Ibu Fatmawati.'),
+  m('Pengibar bendera pada upacara Proklamasi 17 Agustus 1945 adalah ...', 'Latief Hendraningrat dan Suhud', ['Soekarni dan Wikana', 'Sayuti Melik dan B.M. Diah', 'Chaerul Saleh dan Adam Malik'], 'Bendera dikibarkan oleh Latief Hendraningrat dan Suhud.'),
+  m('Peristiwa diamankannya Soekarno dan Hatta oleh golongan muda ke luar Jakarta sehari sebelum proklamasi dikenal sebagai peristiwa ...', 'Rengasdengklok', ['Bandung Lautan Api', 'Linggarjati', 'Ambarawa'], 'Peristiwa Rengasdengklok terjadi 16 Agustus 1945.'),
+  m('Isi Dekrit Presiden 5 Juli 1959 antara lain ...', 'Pembubaran Konstituante dan berlakunya kembali UUD 1945', ['Pembentukan Republik Indonesia Serikat', 'Pengakuan kedaulatan oleh Belanda', 'Pembubaran PKI'], 'Dekrit juga menyatakan tidak berlakunya UUDS 1950 dan pembentukan MPRS serta DPAS.'),
+  m('Undang-Undang Dasar yang berlaku pada masa Republik Indonesia Serikat adalah ...', 'Konstitusi RIS 1949', ['UUDS 1950', 'UUD 1945', 'Piagam Jakarta'], 'Konstitusi RIS berlaku 27 Desember 1949–17 Agustus 1950.'),
+  m('UUDS 1950 berlaku pada periode ...', '17 Agustus 1950 – 5 Juli 1959', ['18 Agustus 1945 – 27 Desember 1949', '27 Desember 1949 – 17 Agustus 1950', '5 Juli 1959 – 1999'], 'UUDS 1950 berakhir dengan Dekrit Presiden 5 Juli 1959.'),
+  m('Sistem pemerintahan yang diterapkan pada masa berlakunya UUDS 1950 adalah ...', 'Demokrasi liberal/parlementer', ['Demokrasi terpimpin', 'Demokrasi Pancasila', 'Monarki konstitusional'], 'Masa 1950–1959 dikenal sebagai masa demokrasi liberal.'),
+  m('Masa pemerintahan tahun 1959–1965 dikenal dengan sebutan ...', 'Demokrasi Terpimpin', ['Demokrasi Liberal', 'Orde Baru', 'Reformasi'], 'Demokrasi Terpimpin dimulai setelah Dekrit Presiden 5 Juli 1959.'),
+  m('Pemilihan umum pertama di Indonesia diselenggarakan pada tahun ...', '1955', ['1950', '1959', '1971'], 'Pemilu 1955 memilih anggota DPR dan Konstituante.'),
+  m('Konferensi Asia Afrika tahun 1955 diselenggarakan di kota ...', 'Bandung', ['Jakarta', 'Bogor', 'Yogyakarta'], 'KAA berlangsung 18–24 April 1955 di Gedung Merdeka, Bandung.'),
+  m('Prinsip yang dihasilkan Konferensi Asia Afrika 1955 dikenal dengan nama ...', 'Dasasila Bandung', ['Pancasila', 'Trisakti', 'Nawacita'], 'Dasasila Bandung berisi sepuluh prinsip hubungan antarbangsa.'),
+  m('Deklarasi yang menyatakan bahwa laut di antara pulau-pulau Indonesia merupakan wilayah kedaulatan Indonesia adalah ...', 'Deklarasi Djuanda 1957', ['Dekrit Presiden 1959', 'Deklarasi Bangkok 1967', 'Dasasila Bandung 1955'], 'Deklarasi Djuanda 13 Desember 1957 menjadi dasar Wawasan Nusantara.'),
+  m('ASEAN didirikan melalui ...', 'Deklarasi Bangkok tanggal 8 Agustus 1967', ['Konferensi Asia Afrika 1955', 'KTT Bali 1976', 'Deklarasi Djuanda 1957'], 'ASEAN didirikan oleh Indonesia, Malaysia, Filipina, Singapura, dan Thailand.'),
+  m('Wakil Indonesia yang menandatangani Deklarasi Bangkok 1967 adalah ...', 'Adam Malik', ['Soebandrio', 'Mochtar Kusumaatmadja', 'Ali Alatas'], 'Adam Malik adalah Menteri Luar Negeri saat itu.'),
+  m('Pemerintahan Darurat Republik Indonesia (PDRI) dipimpin oleh ...', 'Sjafruddin Prawiranegara', ['Mohammad Natsir', 'Sutan Sjahrir', 'Amir Sjarifuddin'], 'PDRI dibentuk di Sumatra Barat setelah Agresi Militer Belanda II.'),
+  m('PDRI dibentuk sebagai akibat dari ...', 'Agresi Militer Belanda II yang menduduki Yogyakarta', ['Agresi Militer Belanda I', 'Pemberontakan PKI Madiun', 'Perjanjian Renville'], 'Para pemimpin RI ditawan Belanda pada 19 Desember 1948.'),
+  m('Perjanjian yang mengakibatkan wilayah RI hanya meliputi Jawa, Madura, dan Sumatra yang diakui de facto adalah ...', 'Perjanjian Linggarjati', ['Perjanjian Renville', 'Perjanjian Roem-Royen', 'Konferensi Meja Bundar'], 'Linggarjati: Belanda mengakui de facto RI atas Jawa, Madura, dan Sumatra.'),
+  m('Perundingan Renville dilaksanakan di atas kapal perang milik ...', 'Amerika Serikat', ['Belanda', 'Inggris', 'Australia'], 'USS Renville milik Angkatan Laut AS.'),
+  m('Hasil Konferensi Meja Bundar (KMB) antara lain ...', 'Belanda menyerahkan kedaulatan kepada Republik Indonesia Serikat', ['Belanda mengakui RI atas Jawa dan Sumatra', 'Dibentuknya PDRI', 'Indonesia kembali ke UUD 1945'], 'Penyerahan kedaulatan dilaksanakan 27 Desember 1949.'),
+  m('Masalah yang belum terselesaikan dalam KMB dan ditunda penyelesaiannya adalah ...', 'Irian Barat', ['Timor Timur', 'Aceh', 'Maluku'], 'Status Irian Barat akan dibahas setahun kemudian, tetapi berlarut hingga Trikora.'),
+  m('Penentuan Pendapat Rakyat (Pepera) di Irian Barat dilaksanakan pada tahun ...', '1969', ['1963', '1962', '1971'], 'Pepera 1969 menetapkan Irian Barat tetap bagian dari Indonesia.'),
+  m('Organisasi pergerakan nasional yang didirikan oleh Tiga Serangkai adalah ...', 'Indische Partij', ['Budi Utomo', 'Sarekat Islam', 'Perhimpunan Indonesia'], 'Tiga Serangkai: Douwes Dekker, Tjipto Mangoenkoesoemo, Suwardi Suryaningrat.'),
+  m('Organisasi mahasiswa Indonesia di Belanda yang berganti nama menjadi Perhimpunan Indonesia adalah ...', 'Indische Vereeniging', ['Indische Partij', 'Jong Java', 'Taman Siswa'], 'Indische Vereeniging (1908) menjadi Perhimpunan Indonesia (1925).'),
+  m('Lagu "Indonesia Raya" pertama kali diperdengarkan pada ...', 'Kongres Pemuda II, 28 Oktober 1928', ['Proklamasi 17 Agustus 1945', 'Sidang BPUPKI 1945', 'Kongres Pemuda I, 1926'], 'W.R. Supratman memperdengarkan lagu Indonesia Raya secara instrumental pada Kongres Pemuda II.'),
+  m('Tujuan utama Serangan Umum 1 Maret 1949 adalah ...', 'Menunjukkan kepada dunia bahwa TNI dan Republik Indonesia masih ada', ['Merebut kembali Surabaya', 'Membebaskan Irian Barat', 'Menumpas pemberontakan PKI'], 'Serangan Umum di Yogyakarta memperkuat posisi diplomasi RI.'),
+  m('Peristiwa yang menandai berakhirnya masa Orde Baru adalah ...', 'Pengunduran diri Presiden Soeharto pada 21 Mei 1998', ['Dekrit Presiden 5 Juli 1959', 'Supersemar 11 Maret 1966', 'Pemilu 1999'], 'Soeharto menyatakan berhenti; B.J. Habibie menjadi Presiden.'),
+  m('Perjanjian damai antara Pemerintah RI dan GAM ditandatangani di ...', 'Helsinki, Finlandia, tahun 2005', ['Jenewa, Swiss, tahun 2002', 'Tokyo, Jepang, tahun 2003', 'Bangkok, Thailand, tahun 2004'], 'MoU Helsinki ditandatangani 15 Agustus 2005.'),
+  m('Kota Pontianak didirikan pada tahun 1771 oleh ...', 'Sultan Syarif Abdurrahman Alkadrie', ['Sultan Hamid II', 'Pangeran Antasari', 'Sultan Hasanuddin'], 'Pontianak didirikan 23 Oktober 1771 oleh Syarif Abdurrahman Alkadrie.'),
+];
+
+// Peristiwa - tanggal
+const peristiwa = [
+  ['Berdirinya Budi Utomo', '20 Mei 1908'],
+  ['Berdirinya Muhammadiyah', '18 November 1912'],
+  ['Berdirinya Indische Partij', '25 Desember 1912'],
+  ['Berdirinya Nahdlatul Ulama', '31 Januari 1926'],
+  ['Berdirinya Taman Siswa', '3 Juli 1922'],
+  ['Sumpah Pemuda', '28 Oktober 1928'],
+  ['Kongres Perempuan Indonesia I', '22 Desember 1928'],
+  ['Penyerahan kekuasaan Belanda kepada Jepang di Kalijati', '8 Maret 1942'],
+  ['Perumusan Piagam Jakarta', '22 Juni 1945'],
+  ['Peristiwa Rengasdengklok', '16 Agustus 1945'],
+  ['Proklamasi Kemerdekaan Indonesia', '17 Agustus 1945'],
+  ['Pengesahan UUD 1945 oleh PPKI', '18 Agustus 1945'],
+  ['Pembentukan Badan Keamanan Rakyat (BKR)', '22 Agustus 1945'],
+  ['Pembentukan Tentara Keamanan Rakyat (TKR)', '5 Oktober 1945'],
+  ['Pertempuran Surabaya', '10 November 1945'],
+  ['Berakhirnya Palagan Ambarawa', '15 Desember 1945'],
+  ['Bandung Lautan Api', '24 Maret 1946'],
+  ['Puputan Margarana', '20 November 1946'],
+  ['Agresi Militer Belanda I', '21 Juli 1947'],
+  ['Penandatanganan Perjanjian Renville', '17 Januari 1948'],
+  ['Pemberontakan PKI di Madiun', '18 September 1948'],
+  ['Agresi Militer Belanda II', '19 Desember 1948'],
+  ['Serangan Umum di Yogyakarta', '1 Maret 1949'],
+  ['Persetujuan Roem-Royen', '7 Mei 1949'],
+  ['Pengakuan kedaulatan Indonesia oleh Belanda', '27 Desember 1949'],
+  ['Kembalinya RIS menjadi Negara Kesatuan Republik Indonesia', '17 Agustus 1950'],
+  ['Deklarasi Djuanda', '13 Desember 1957'],
+  ['Dekrit Presiden', '5 Juli 1959'],
+  ['Komando Trikora', '19 Desember 1961'],
+  ['Penyerahan Irian Barat dari UNTEA kepada Indonesia', '1 Mei 1963'],
+  ['Surat Perintah Sebelas Maret (Supersemar)', '11 Maret 1966'],
+  ['Berdirinya ASEAN', '8 Agustus 1967'],
+  ['Pembentukan KORPRI', '29 November 1971'],
+  ['Pengunduran diri Presiden Soeharto', '21 Mei 1998'],
+  ['Penandatanganan MoU Helsinki', '15 Agustus 2005'],
+];
+const peristiwaQs = fromTable(peristiwa, {
+  qa: (a) => `${a} terjadi pada tanggal ...`,
+  qb: (b) => `Peristiwa yang terjadi pada tanggal ${b} adalah ...`,
+  expl: (r) => `${r[0]}: ${r[1]}.`,
+});
+
+// Hari nasional
+const hari = [
+  ['Hari Kebangkitan Nasional', '20 Mei'], ['Hari Lahir Pancasila', '1 Juni'], ['Hari Kesaktian Pancasila', '1 Oktober'],
+  ['Hari Sumpah Pemuda', '28 Oktober'], ['Hari Pahlawan', '10 November'], ['Hari Ibu', '22 Desember'],
+  ['Hari Pendidikan Nasional', '2 Mei'], ['Hari Bela Negara', '19 Desember'], ['Hari TNI', '5 Oktober'],
+  ['Hari KORPRI', '29 November'], ['Hari Juang TNI AD', '15 Desember'], ['Hari Kartini', '21 April'],
+];
+const hariQs = fromTable(hari, {
+  qa: (a) => `${a} diperingati setiap tanggal ...`,
+  qb: (b) => `Hari nasional yang diperingati setiap tanggal ${b} adalah ...`,
+});
+
+// Tokoh
+const tokoh = [
+  ['Ki Hajar Dewantara', 'Pendiri Taman Siswa dan Bapak Pendidikan Nasional'],
+  ['K.H. Ahmad Dahlan', 'Pendiri Muhammadiyah'],
+  ['K.H. Hasyim Asy\'ari', 'Pendiri Nahdlatul Ulama'],
+  ['dr. Soetomo', 'Pendiri Budi Utomo bersama para pelajar STOVIA'],
+  ['dr. Wahidin Sudirohusodo', 'Penggagas berdirinya Budi Utomo melalui gagasan dana pelajar'],
+  ['W.R. Supratman', 'Pencipta lagu kebangsaan Indonesia Raya'],
+  ['Sayuti Melik', 'Pengetik naskah proklamasi'],
+  ['Fatmawati', 'Penjahit bendera pusaka Merah Putih'],
+  ['Jenderal Soedirman', 'Panglima Besar yang memimpin perang gerilya'],
+  ['Sjafruddin Prawiranegara', 'Ketua Pemerintahan Darurat Republik Indonesia (PDRI)'],
+  ['Mohammad Roem', 'Ketua delegasi Indonesia dalam perundingan dengan van Royen tahun 1949'],
+  ['Ir. H. Djuanda Kartawidjaja', 'Pencetus deklarasi wilayah laut Nusantara tahun 1957'],
+  ['Bung Tomo', 'Tokoh pembakar semangat arek-arek Surabaya dalam pertempuran 10 November 1945'],
+  ['I Gusti Ngurah Rai', 'Pemimpin Puputan Margarana di Bali'],
+  ['Pangeran Diponegoro', 'Pemimpin Perang Jawa tahun 1825–1830'],
+  ['Tuanku Imam Bonjol', 'Tokoh Perang Padri di Sumatra Barat'],
+  ['Pangeran Antasari', 'Pemimpin Perang Banjar di Kalimantan Selatan'],
+  ['Sultan Hasanuddin', 'Raja Gowa yang dijuluki Ayam Jantan dari Timur'],
+  ['Kapitan Pattimura', 'Pemimpin perlawanan rakyat Maluku tahun 1817'],
+  ['Cut Nyak Dien', 'Pahlawan wanita yang memimpin perlawanan di Aceh'],
+  ['R.A. Kartini', 'Tokoh emansipasi wanita yang menulis surat-surat "Habis Gelap Terbitlah Terang"'],
+  ['Mr. Muhammad Yamin', 'Pengusul rumusan dasar negara pada sidang BPUPKI 29 Mei 1945'],
+  ['Laksamana Tadashi Maeda', 'Perwira Jepang yang rumahnya menjadi tempat perumusan naskah proklamasi'],
+  ['Mohammad Hatta', 'Wakil Presiden pertama dan tokoh koperasi Indonesia'],
+];
+const tokohQs = fromTable(tokoh, {
+  qa: (a) => `${a} dikenal dalam sejarah Indonesia sebagai ...`,
+  qb: (b) => `Tokoh yang dikenal sebagai "${b.charAt(0).toLowerCase() + b.slice(1)}" adalah ...`,
+});
+
+export default [...manual, ...peristiwaQs, ...hariQs, ...tokohQs];
