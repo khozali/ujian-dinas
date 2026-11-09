@@ -52,11 +52,11 @@ export function fromTable(rows, { qa, qb, expl } = {}) {
     const e = r[2] || (expl ? expl(r) : '');
     if (qa) {
       const q = qa(r[0], r);
-      out.push(m(q, r[1], pickDistractors(Bs, r[1], q), e));
+      out.push(m(q, r[1], pickDistractors(Bs, r[1], q, 4), e));
     }
     if (qb) {
       const q = qb(r[1], r);
-      out.push(m(q, r[0], pickDistractors(As, r[0], q), e));
+      out.push(m(q, r[0], pickDistractors(As, r[0], q, 4), e));
     }
   });
   return out;
@@ -67,7 +67,7 @@ export function oddOneIn(rows, qText, { goodIdx = 0, badIdx = 1, expl } = {}) {
   const bads = rows.map((r) => r[badIdx]);
   return rows.map((r) => {
     const key = qText + r[goodIdx];
-    const wr = pickDistractors(bads.filter((b) => b !== r[badIdx]), r[goodIdx], key);
+    const wr = pickDistractors(bads.filter((b) => b !== r[badIdx]), r[goodIdx], key, 4);
     return m(qText, r[goodIdx], wr, expl ? expl(r) : '');
   });
 }

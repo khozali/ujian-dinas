@@ -21,8 +21,8 @@
     data() {
       const s = store.load();
       return {
-        B, view: 'home', tab: 'paket', mode: 'ujian', duration: 50,
-        results: s.results || {}, history: s.history || [], topicStats: s.topicStats || {},
+        B, view: 'home', tab: B.tryout ? 'tryout' : 'paket', mode: 'ujian', duration: 50, keySet: null, keyShowAll: true, toMode: 'ujian',
+        results: s.results || {}, toResults: s.toResults || {}, history: s.history || [], topicStats: s.topicStats || {},
         saved: s.saved || null,
         session: null, cur: 0, remaining: 0, timer: null, startedAt: 0,
         result: null, rvFilter: 'salah',
@@ -50,7 +50,7 @@
       },
     },
     methods: {
-      persist() { store.save({ results: this.results, history: this.history, topicStats: this.topicStats, saved: this.saved }); },
+      persist() { store.save({ toResults: this.toResults, results: this.results, history: this.history, topicStats: this.topicStats, saved: this.saved }); },
       fmt(s) { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60), d = s % 60; return `${m}:${String(d).padStart(2, '0')}`; },
       grade(v) { return v >= 80 ? 'ok' : v >= 60 ? 'mid' : 'low'; },
 
@@ -58,6 +58,12 @@
         if (!fresh && this.saved && this.saved.kind === 'paket' && this.saved.idx === i) { this.askResume = true; return; }
         this.begin({ kind: 'paket', idx: i, label: `Paket ${i + 1}`, ids: B.exams[i].slice(), mode: this.mode, secs: this.duration * 60 });
       },
+      startTryout(i, fresh) {
+        if (!fresh && this.saved && this.saved.kind === 'tryout' && this.saved.idx === i) { this.askResume = true; return; }
+        const st = B.tryout.sets[i];
+        this.begin({ kind: 'tryout', idx: i, label: `Try Out: ${st.name}`, ids: st.ids.slice(), mode: this.toMode, secs: st.minutes * 60 });
+      },
+      openKey(i) { this.keySet = i; this.view = 'key'; window.scrollTo(0, 0); },
       startMateri(ti) {
         this.begin({ kind: 'materi', idx: ti, label: `Latihan ${B.topics[ti].name}`, ids: sampleIds(topicIds[ti], 20), mode: 'latihan', secs: 0 });
       },
@@ -72,7 +78,7 @@
         this.remaining = s.mode === 'ujian' ? s.secs - s.elapsed : 0;
         this.view = 'exam'; this.startClock();
       },
-      discardSaved() { const s = this.saved; this.askResume = false; this.saved = null; this.persist(); if (s && s.kind === 'paket') this.startPaket(s.idx, true); },
+      discardSaved() { const s = this.saved; this.askResume = false; this.saved = null; this.persist(); if (s && s.kind === 'paket') this.startPaket(s.idx, true); else if (s && s.kind === 'tryout') this.startTryout(s.idx, true); },
       startClock() {
         clearInterval(this.timer); this.startedAt = Date.now() - this.session.elapsed * 1000;
         this.timer = setInterval(() => {
@@ -123,22 +129,26 @@
         const score = Math.round(right / s.ids.length * 100);
         this.result = { kind: s.kind, idx: s.idx, label: s.label, date: today(), right, empty, total: s.ids.length, score, secs: Math.min(s.elapsed, s.secs || s.elapsed), byTopic: byTopic.filter((r) => r.total), items };
         // simpan
+        if (s.kind === 'tryout') {
+          const prev = this.toResults[s.idx];
+          this.toResults[s.idx] = { last: score, best: Math.max(score, prev ? prev.best : 0), date: this.result.date };
+        }
         if (s.kind === 'paket') {
           const prev = this.results[s.idx];
           this.results[s.idx] = { last: score, best: Math.max(score, prev ? prev.best : 0), date: this.result.date };
         }
         byTopic.forEach((r) => { if (!r.total) return; const o = this.topicStats[r.key] || { right: 0, total: 0 }; o.right += r.right; o.total += r.total; this.topicStats[r.key] = o; });
-        this.history.push({ date: this.result.date, label: s.label + (s.mode === 'latihan' && s.kind === 'paket' ? ' (latihan)' : ''), right, total: s.ids.length, score, secs: this.result.secs });
+        this.history.push({ date: this.result.date, label: s.label + (s.mode === 'latihan' && s.kind !== 'materi' ? ' (latihan)' : ''), right, total: s.ids.length, score, secs: this.result.secs });
         if (this.history.length > 300) this.history = this.history.slice(-300);
         this.saved = null; this.session = null; this.persist();
         this.rvFilter = 'salah'; this.view = 'result'; window.scrollTo(0, 0);
       },
-      resetAll() { this.results = {}; this.history = []; this.topicStats = {}; this.saved = null; this.persist(); this.askReset = false; },
+      resetAll() { this.toResults = {}; this.results = {}; this.history = []; this.topicStats = {}; this.saved = null; this.persist(); this.askReset = false; },
       onKey(e) {
         if (this.view !== 'exam' || this.askFinish) return;
         const k = e.key.toLowerCase();
-        const map = { a: 0, b: 1, c: 2, d: 3, 1: 0, 2: 1, 3: 2, 4: 3 };
-        if (k in map) this.choose(map[k]);
+        const map = { a: 0, b: 1, c: 2, d: 3, e: 4, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4 };
+        if (k in map && map[k] < this.q.o.length) this.choose(map[k]);
         else if (k === 'arrowright') this.go(this.cur + 1);
         else if (k === 'arrowleft') this.go(this.cur - 1);
       },

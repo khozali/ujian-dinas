@@ -98,6 +98,19 @@ header.top{display:flex;align-items:center;gap:12px;justify-content:space-betwee
 .rv .st.r{color:var(--ok)} .rv .st.w{color:var(--bad)}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;z-index:10}
 .modal{max-width:420px;width:100%}
+.tag.to{background:#f3e3c5;color:#7a4b00}
+.tag.cek{background:var(--warn-soft);color:var(--warn)}
+.to-list{display:grid;gap:10px;margin-top:14px}
+.to-item{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px;flex-wrap:wrap}
+.to-no{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:800}
+.to-body{flex:1;min-width:180px}
+.to-act{display:flex;gap:6px}
+.keygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:14px}
+.kg{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;position:relative}
+.dot{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#c98a1b}
+.tabs{max-width:100%;overflow-x:auto}
+.tabs button{white-space:nowrap}
+@media (max-width:520px){.tabs button{padding:6px 10px;font-size:13px}}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 0}
 kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;font-size:12px}
 </style>
@@ -111,6 +124,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
         <div><h1>Bank Soal Ujian Dinas Tingkat I</h1><small>Kenaikan pangkat II/d → III/a · PNS Kemhan</small></div>
       </div>
       <nav class="tabs" v-if="view==='home'">
+        <button v-if="B.tryout" :class="{on:tab==='tryout'}" @click="tab='tryout'">Try Out 2026</button>
         <button :class="{on:tab==='paket'}" @click="tab='paket'">Paket Ujian</button>
         <button :class="{on:tab==='materi'}" @click="tab='materi'">Latihan Materi</button>
         <button :class="{on:tab==='riwayat'}" @click="tab='riwayat'">Riwayat</button>
@@ -124,6 +138,31 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
         <div class="card stat"><b>{{ B.questions.length.toLocaleString('id-ID') }}</b><span>soal unik di bank</span></div>
         <div class="card stat"><b>{{ doneCount }}</b><span>paket sudah dikerjakan</span></div>
         <div class="card stat"><b>{{ avgScore===null ? '–' : avgScore }}</b><span>rata-rata nilai terakhir</span></div>
+      </div>
+
+      <div v-if="tab==='tryout' && B.tryout" class="card">
+        <div class="row">
+          <div><b>{{ B.tryout.title }}</b><div class="muted small">9 materi sesuai jadwal ujian, masing-masing 50 soal pilihan A–E dan 60 menit. Soal bertanda <span class="tag to">Try Out</span> diambil dari soal try out.</div></div>
+          <div class="spacer"></div>
+          <div class="seg">
+            <button :class="{on:toMode==='ujian'}" @click="toMode='ujian'">Mode ujian</button>
+            <button :class="{on:toMode==='latihan'}" @click="toMode='latihan'">Mode latihan</button>
+          </div>
+        </div>
+        <div class="to-list">
+          <div class="to-item" v-for="(st,i) in B.tryout.sets" :key="st.key">
+            <div class="to-no">{{ i+1 }}</div>
+            <div class="to-body">
+              <b>{{ st.name }}</b>
+              <div class="muted small">{{ st.ids.length }} soal · {{ st.minutes }} menit · {{ st.nTryout }} soal dari try out</div>
+              <div class="small" v-if="toResults[i]">Terakhir <b>{{ toResults[i].last }}</b> · Terbaik {{ toResults[i].best }}</div>
+            </div>
+            <div class="to-act">
+              <button class="btn pri small" @click="startTryout(i)">{{ saved && saved.kind==='tryout' && saved.idx===i ? 'Lanjutkan' : 'Kerjakan' }}</button>
+              <button class="btn small" @click="openKey(i)">Kunci jawaban</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-if="tab==='paket'" class="card">
@@ -184,14 +223,14 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
       <div class="card">
         <div class="qhead">
           <div><b>{{ session.label }}</b> · Soal {{ cur+1 }} dari {{ session.ids.length }}</div>
-          <span class="tag">{{ B.topics[q.t].name }}</span>
+          <span><span v-if="q.s==='to'" class="tag to">Try Out no. {{ q.n }}</span> <span class="tag">{{ B.topics[q.t].name }}</span></span>
         </div>
         <div class="qtext">{{ q.q }}</div>
         <button v-for="(o,oi) in q.o" :key="oi" class="opt" :class="optClass(oi)" @click="choose(oi)">
-          <span class="k">{{ 'ABCD'[oi] }}</span><span>{{ o }}</span>
+          <span class="k">{{ 'ABCDE'[oi] }}</span><span>{{ o }}</span>
         </button>
         <div class="expl" v-if="showAnswer(cur)">
-          <b>{{ session.ans[cur]===q.a ? 'Benar.' : 'Jawaban benar: ' + 'ABCD'[q.a] + '.' }}</b> {{ q.e }}
+          <b>{{ session.ans[cur]===q.a ? 'Benar.' : 'Jawaban benar: ' + 'ABCDE'[q.a] + '.' }}</b> {{ q.e }}
         </div>
         <div class="row" style="margin-top:14px">
           <button class="btn" :disabled="cur===0" @click="go(cur-1)">← Sebelumnya</button>
@@ -200,7 +239,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
           <button class="btn pri" v-if="cur<session.ids.length-1" @click="go(cur+1)">Berikutnya →</button>
           <button class="btn pri" v-else @click="askFinish=true">Selesai</button>
         </div>
-        <div class="muted small" style="margin-top:10px">Pintasan: <kbd>A</kbd>–<kbd>D</kbd> pilih jawaban, <kbd>←</kbd> <kbd>→</kbd> pindah soal.</div>
+        <div class="muted small" style="margin-top:10px">Pintasan: <kbd>A</kbd>–<kbd>E</kbd> pilih jawaban, <kbd>←</kbd> <kbd>→</kbd> pindah soal.</div>
       </div>
       <div>
         <div class="card sticky">
@@ -224,6 +263,31 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
       </div>
     </div>
 
+    <!-- KUNCI JAWABAN -->
+    <template v-if="view==='key' && keySet!==null">
+      <div class="card">
+        <div class="row">
+          <div><div class="muted small">{{ B.tryout.title }}</div><b style="font-size:18px">Kunci Jawaban – {{ B.tryout.sets[keySet].name }}</b></div>
+          <div class="spacer"></div>
+          <div class="seg"><button :class="{on:keyShowAll}" @click="keyShowAll=true">Soal + kunci</button><button :class="{on:!keyShowAll}" @click="keyShowAll=false">Ringkas</button></div>
+          <button class="btn" @click="view='home'">Kembali</button>
+        </div>
+        <div class="keygrid" v-if="!keyShowAll">
+          <div v-for="(id,i) in B.tryout.sets[keySet].ids" :key="i" class="kg"><span class="muted">{{ i+1 }}.</span> <b>{{ 'ABCDE'[B.questions[id].a] }}</b><span v-if="B.questions[id].s==='to'" class="dot" title="Soal try out"></span></div>
+        </div>
+        <div v-else style="margin-top:12px">
+          <div class="rv" v-for="(id,i) in B.tryout.sets[keySet].ids" :key="i">
+            <div class="row small"><b>No. {{ i+1 }}</b><span v-if="B.questions[id].s==='to'" class="tag to">Try Out no. {{ B.questions[id].n }}</span><span v-if="B.questions[id].c" class="tag cek">kunci perlu dicek</span></div>
+            <div style="margin:6px 0">{{ B.questions[id].q }}</div>
+            <ol type="A" class="small" style="margin:4px 0 6px;padding-left:22px">
+              <li v-for="(o,oi) in B.questions[id].o" :key="oi" :style="oi===B.questions[id].a ? 'color:var(--ok);font-weight:700' : ''">{{ o }}</li>
+            </ol>
+            <div class="small">Kunci: <b style="color:var(--ok)">{{ 'ABCDE'[B.questions[id].a] }}</b><span class="muted" v-if="B.questions[id].e"> — {{ B.questions[id].e }}</span></div>
+          </div>
+        </div>
+      </div>
+    </template>
+
     <!-- RESULT -->
     <template v-if="view==='result'">
       <div class="card">
@@ -233,6 +297,8 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
             <div class="muted">{{ result.right }} benar dari {{ result.total }} soal · {{ result.total - result.right - result.empty }} salah · {{ result.empty }} kosong · {{ fmt(result.secs) }}</div></div>
           <div class="spacer"></div>
           <button class="btn" @click="view='home'">Kembali</button>
+          <button class="btn pri" v-if="result.kind==='tryout'" @click="startTryout(result.idx, true)">Ulangi</button>
+          <button class="btn" v-if="result.kind==='tryout'" @click="openKey(result.idx)">Kunci jawaban</button>
           <button class="btn pri" v-if="result.kind==='paket'" @click="startPaket(result.idx, true)">Ulangi paket</button>
           <button class="btn pri" v-if="result.kind==='paket' && result.idx<B.exams.length-1" @click="startPaket(result.idx+1)">Paket {{ result.idx+2 }} →</button>
         </div>
@@ -249,9 +315,10 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
           <div class="rv" v-for="item in reviewList" :key="item.i">
             <div class="row small"><span class="st" :class="item.ok?'r':'w'">{{ item.ok ? 'BENAR' : (item.my===null ? 'KOSONG' : 'SALAH') }}</span><span class="muted">No. {{ item.i+1 }} · {{ B.topics[item.q.t].name }}</span></div>
             <div style="margin:6px 0">{{ item.q.q }}</div>
-            <div class="small" v-if="!item.ok && item.my!==null">Jawaban Anda: <span style="color:var(--bad)">{{ 'ABCD'[item.my] }}. {{ item.q.o[item.my] }}</span></div>
-            <div class="small">Jawaban benar: <b style="color:var(--ok)">{{ 'ABCD'[item.q.a] }}. {{ item.q.o[item.q.a] }}</b></div>
+            <div class="small" v-if="!item.ok && item.my!==null">Jawaban Anda: <span style="color:var(--bad)">{{ 'ABCDE'[item.my] }}. {{ item.q.o[item.my] }}</span></div>
+            <div class="small">Jawaban benar: <b style="color:var(--ok)">{{ 'ABCDE'[item.q.a] }}. {{ item.q.o[item.q.a] }}</b></div>
             <div class="small muted" v-if="item.q.e" style="margin-top:4px">{{ item.q.e }}</div>
+            <div class="small" v-if="item.q.c"><span class="tag cek">kunci perlu dicek</span></div>
           </div>
           <p class="muted" v-if="!reviewList.length">Semua jawaban benar. Mantap!</p>
         </div>

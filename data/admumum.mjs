@@ -129,7 +129,7 @@ const spip = [
 ];
 const bukanSpip = ['Pemeriksaan eksternal', 'Penegakan hukum', 'Pengadaan barang/jasa', 'Penyusunan anggaran', 'Audit investigatif'];
 const spipQs = spip.map((s) =>
-  m('Berikut ini yang termasuk unsur Sistem Pengendalian Intern Pemerintah (SPIP) menurut PP 60/2008 adalah ...', s, pickDistractors(bukanSpip, s, s), 'Lima unsur SPIP: lingkungan pengendalian, penilaian risiko, kegiatan pengendalian, informasi dan komunikasi, serta pemantauan pengendalian intern.')
+  m('Berikut ini yang termasuk unsur Sistem Pengendalian Intern Pemerintah (SPIP) menurut PP 60/2008 adalah ...', s, pickDistractors(bukanSpip, s, s, 4), 'Lima unsur SPIP: lingkungan pengendalian, penilaian risiko, kegiatan pengendalian, informasi dan komunikasi, serta pemantauan pengendalian intern.')
 );
 
 // Bentuk pemanfaatan vs pemindahtanganan BMN

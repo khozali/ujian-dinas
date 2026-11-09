@@ -71,7 +71,7 @@ const butir = [
 ];
 const SILA = ['Sila pertama', 'Sila kedua', 'Sila ketiga', 'Sila keempat', 'Sila kelima'];
 const butirQs = butir.map(([b, s]) =>
-  m(`Sikap "${b}" merupakan pengamalan Pancasila ...`, s, SILA.filter((x) => x !== s).slice(0, 3), `Sikap tersebut merupakan salah satu butir pengamalan ${s.toLowerCase()} Pancasila.`)
+  m(`Sikap "${b}" merupakan pengamalan Pancasila ...`, s, SILA.filter((x) => x !== s), `Sikap tersebut merupakan salah satu butir pengamalan ${s.toLowerCase()} Pancasila.`)
 );
 
 export default [...manual, ...lambangQs, ...butirQs];

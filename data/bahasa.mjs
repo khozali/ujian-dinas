@@ -75,9 +75,9 @@ const bakuList = pairs.map((p) => p[0]);
 const bakuQs = [];
 pairs.forEach(([b, t]) => {
   // Soal tipe 1: pilih kata baku (3 pengecoh = bentuk tidak baku kata lain)
-  bakuQs.push(m(`Di antara kata berikut, yang merupakan kata baku adalah ...`, b, pickDistractors(tidakBaku, t, 'b1' + b), `Bentuk baku: "${b}"; bentuk tidak baku: "${t}".`));
+  bakuQs.push(m(`Di antara kata berikut, yang merupakan kata baku adalah ...`, b, pickDistractors(tidakBaku, t, 'b1' + b, 4), `Bentuk baku: "${b}"; bentuk tidak baku: "${t}".`));
   // Soal tipe 2: pilih kata tidak baku
-  bakuQs.push(m(`Di antara kata berikut, yang merupakan kata TIDAK baku adalah ...`, t, pickDistractors(bakuList, b, 'b2' + t), `"${t}" tidak baku; bentuk bakunya "${b}".`));
+  bakuQs.push(m(`Di antara kata berikut, yang merupakan kata TIDAK baku adalah ...`, t, pickDistractors(bakuList, b, 'b2' + t, 4), `"${t}" tidak baku; bentuk bakunya "${b}".`));
 });
 
 export default [...manual, ...bakuQs];

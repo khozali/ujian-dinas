@@ -81,7 +81,7 @@ const notOmsp = [
   'Memeriksa pengelolaan keuangan negara',
 ];
 const omspQs = omsp.map((t) =>
-  m('Berikut ini yang termasuk tugas Operasi Militer Selain Perang (OMSP) TNI adalah ...', t, pickDistractors(notOmsp, t, t), `"${t}" termasuk 16 tugas OMSP dalam Pasal 7 ayat (2) huruf b UU TNI (sebagaimana diubah UU 3/2025).`)
+  m('Berikut ini yang termasuk tugas Operasi Militer Selain Perang (OMSP) TNI adalah ...', t, pickDistractors(notOmsp, t, t, 4), `"${t}" termasuk 16 tugas OMSP dalam Pasal 7 ayat (2) huruf b UU TNI (sebagaimana diubah UU 3/2025).`)
 );
 
 // Pangkat TNI
@@ -94,7 +94,7 @@ const pangkat = [
 ];
 const GOL = ['Perwira Pertama', 'Perwira Menengah', 'Perwira Tinggi', 'Bintara', 'Tamtama'];
 const pangkatQs = pangkat.map(([p, g]) =>
-  m(`Pangkat ${p} di lingkungan TNI AD termasuk golongan ...`, g, pickDistractors(GOL, g, p), `${p} termasuk golongan ${g}.`)
+  m(`Pangkat ${p} di lingkungan TNI AD termasuk golongan ...`, g, pickDistractors(GOL, g, p, 4), `${p} termasuk golongan ${g}.`)
 );
 
 const setara = [
@@ -178,7 +178,7 @@ const addSet = (list, name) => {
   list.forEach((t, i) => {
     doktrinQs.push(m(`"${t}" merupakan bunyi salah satu butir ...`, name, DOK.filter((d) => d !== name), `Kalimat tersebut adalah butir ${URUT[i]} ${name}.`));
     if (name !== '8 Wajib TNI') {
-      doktrinQs.push(m(`Butir ${URUT[i]} ${name} berbunyi ...`, t, pickDistractors(list, t, name + i), `${name} butir ${URUT[i]}: ${t}.`));
+      doktrinQs.push(m(`Butir ${URUT[i]} ${name} berbunyi ...`, t, pickDistractors(list, t, name + i, 4), `${name} butir ${URUT[i]}: ${t}.`));
     }
   });
 };
