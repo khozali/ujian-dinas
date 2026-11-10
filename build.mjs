@@ -78,34 +78,52 @@ exams.forEach((ex, i) => { exams[i] = shuffle(ex, rng(hash('exam' + i))); });
 const words = (t) => new Set(t.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length > 3));
 const sim = (a, b) => { const A = words(a), B = words(b); let i = 0; A.forEach((w) => B.has(w) && i++); return i / Math.max(1, A.size + B.size - i); };
 const extraFor = (q) => { for (const k in EXTRA5) if (q.startsWith(k)) return EXTRA5[k]; return null; };
-const tryoutSets = MATERI.map((M) => {
+const tryoutSets = [];
+// Paket 1: seluruh soal try out asli, urut sesuai nomor try out
+{
+  const ids = [];
+  [...TRYOUT].sort((x, y) => x.no - y.no).forEach((q) => {
+    const M = MATERI.find((m) => m.key === q.materi);
+    const ti = TOPICS.findIndex((t) => t.key === M.bank);
+    ids.push(questions.length);
+    questions.push({ t: ti, q: q.q, o: q.o, a: q.a, e: q.e || '', s: 'to', n: q.no, c: q.cek ? 1 : 0, m: M.name });
+  });
+  tryoutSets.push({ key: 'tryout', name: 'Try Out', minutes: 90, ids, nTryout: ids.length, isTryout: true });
+}
+// Paket 2-10: paket baru per materi (50 soal, 5 pilihan), tanpa soal try out
+MATERI.forEach((M) => {
   const ti = TOPICS.findIndex((t) => t.key === M.bank);
   const ids = [];
-  const fixed = [...TRYOUT.filter((q) => q.materi === M.key), ...BARU.filter((q) => q.materi === M.key)];
-  fixed.forEach((q) => { ids.push(questions.length); questions.push({ t: ti, q: q.q, o: q.o, a: q.a, e: q.e || '', s: q.src === 'tryout' ? 'to' : 'baru', n: q.no || 0, c: q.cek ? 1 : 0 }); });
-  const texts = fixed.map((q) => q.q + ' ' + q.o[q.a]);
+  const baruQ = BARU.filter((q) => q.materi === M.key);
+  baruQ.forEach((q) => { ids.push(questions.length); questions.push({ t: ti, q: q.q, o: q.o, a: q.a, e: q.e || '', s: 'baru' }); });
+  const toQ = TRYOUT.filter((q) => q.materi === M.key);
+  const texts = toQ.map((q) => q.q + ' ' + q.o[q.a]);
   const norm = (x) => x.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const fixedAns = new Set(fixed.map((q) => norm(q.o[q.a])));
+  const toAns = new Set(toQ.map((q) => norm(q.o[q.a])));
   const PRIOR = { minu: /naskah|surat|tulisan|a\.n\.|u\.b\.|plh|plt|klasifikasi|derajat|agenda|telaahan|paraf|inventaris|bmn|barang milik/i };
   let pool = shuffle(TOPICS[ti].items, rng(hash('tryout' + M.key)));
   if (PRIOR[M.key]) pool = [...pool.filter((x) => PRIOR[M.key].test(x.q)), ...pool.filter((x) => !PRIOR[M.key].test(x.q))];
-  for (const it of pool) {
-    if (ids.length >= 50) break;
-    let wr = [...new Set(it.wrongs)].filter((w) => w !== it.correct);
-    if (wr.length < 4) { const x = extraFor(it.q); if (x && x !== it.correct && !wr.includes(x)) wr.push(x); }
-    if (wr.length < 4) continue;
-    if (texts.some((t) => sim(t, it.q + ' ' + it.correct) >= 0.45)) continue;
-    if (fixedAns.has(norm(it.correct)) && it.correct.length > 2) continue;
-    const opts = [it.correct, ...wr.slice(0, 4)];
-    const order = shuffle([0, 1, 2, 3, 4], rng(hash('to5' + it.q + it.correct)));
-    ids.push(questions.length);
-    questions.push({ t: ti, q: it.q, o: order.map((i) => opts[i]), a: order.indexOf(0), e: it.expl || '', s: 'bank' });
-  }
-  if (ids.length < 50) throw new Error('Paket try out ' + M.name + ' kurang: ' + ids.length);
-  const nTo = fixed.filter((q) => q.src === 'tryout').length;
-  return { key: M.key, name: M.name, minutes: 60, ids: shuffle(ids, rng(hash('urut' + M.key))), nTryout: nTo };
+  const used = new Set();
+  const take = (strict) => {
+    for (const it of pool) {
+      if (ids.length >= 50) break;
+      const key = it.q + '|' + it.correct;
+      if (used.has(key)) continue;
+      let wr = [...new Set(it.wrongs)].filter((w) => w !== it.correct);
+      if (wr.length < 4) { const x = extraFor(it.q); if (x && x !== it.correct && !wr.includes(x)) wr.push(x); }
+      if (wr.length < 4) continue;
+      if (strict && (texts.some((t) => sim(t, it.q + ' ' + it.correct) >= 0.45) || (toAns.has(norm(it.correct)) && it.correct.length > 2))) continue;
+      const opts = [it.correct, ...wr.slice(0, 4)];
+      const order = shuffle([0, 1, 2, 3, 4], rng(hash('to5' + it.q + it.correct)));
+      ids.push(questions.length); used.add(key);
+      questions.push({ t: ti, q: it.q, o: order.map((i) => opts[i]), a: order.indexOf(0), e: it.expl || '', s: 'bank' });
+    }
+  };
+  take(true); take(false);
+  if (ids.length < 50) throw new Error('Paket ' + M.name + ' kurang: ' + ids.length);
+  tryoutSets.push({ key: M.key, name: M.name, minutes: 60, ids: shuffle(ids, rng(hash('urut' + M.key))), nTryout: 0 });
 });
-console.table(tryoutSets.map((x) => ({ materi: x.name, soal: x.ids.length, dariTryout: x.nTryout })));
+console.table(tryoutSets.map((x) => ({ paket: x.name, soal: x.ids.length, menit: x.minutes })));
 
 // 3) Statistik
 const stats = TOPICS.map((t) => ({ materi: t.name, bank: t.ids.length, perPaket: t.per, totalTampil: t.per * JUMLAH_UJIAN }));

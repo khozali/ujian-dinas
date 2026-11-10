@@ -61,7 +61,7 @@
       startTryout(i, fresh) {
         if (!fresh && this.saved && this.saved.kind === 'tryout' && this.saved.idx === i) { this.askResume = true; return; }
         const st = B.tryout.sets[i];
-        this.begin({ kind: 'tryout', idx: i, label: `Try Out: ${st.name}`, ids: st.ids.slice(), mode: this.toMode, secs: st.minutes * 60 });
+        this.begin({ kind: 'tryout', idx: i, label: st.isTryout ? "Paket 1 · Try Out (semua soal)" : `Paket ${i + 1} · ${st.name}`, ids: st.ids.slice(), mode: this.toMode, secs: st.minutes * 60 });
       },
       openKey(i) { this.keySet = i; this.view = 'key'; window.scrollTo(0, 0); },
       startMateri(ti) {

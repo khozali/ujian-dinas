@@ -142,7 +142,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
 
       <div v-if="tab==='tryout' && B.tryout" class="card">
         <div class="row">
-          <div><b>{{ B.tryout.title }}</b><div class="muted small">9 materi sesuai jadwal ujian, masing-masing 50 soal pilihan A–E dan 60 menit. Soal bertanda <span class="tag to">Try Out</span> diambil dari soal try out.</div></div>
+          <div><b>{{ B.tryout.title }}</b><div class="muted small">Paket 1 berisi seluruh soal try out asli (urut sesuai nomor). Paket 2–10 adalah paket baru sesuai materi jadwal ujian, masing-masing 50 soal pilihan A–E dan 60 menit.</div></div>
           <div class="spacer"></div>
           <div class="seg">
             <button :class="{on:toMode==='ujian'}" @click="toMode='ujian'">Mode ujian</button>
@@ -154,7 +154,8 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
             <div class="to-no">{{ i+1 }}</div>
             <div class="to-body">
               <b>{{ st.name }}</b>
-              <div class="muted small">{{ st.ids.length }} soal · {{ st.minutes }} menit · {{ st.nTryout }} soal dari try out</div>
+              <div class="muted small" v-if="st.isTryout">{{ st.ids.length }} soal asli try out · {{ st.minutes }} menit · semua materi</div>
+              <div class="muted small" v-else>{{ st.ids.length }} soal · {{ st.minutes }} menit · paket baru</div>
               <div class="small" v-if="toResults[i]">Terakhir <b>{{ toResults[i].last }}</b> · Terbaik {{ toResults[i].best }}</div>
             </div>
             <div class="to-act">
@@ -223,7 +224,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
       <div class="card">
         <div class="qhead">
           <div><b>{{ session.label }}</b> · Soal {{ cur+1 }} dari {{ session.ids.length }}</div>
-          <span><span v-if="q.s==='to'" class="tag to">Try Out no. {{ q.n }}</span> <span class="tag">{{ B.topics[q.t].name }}</span></span>
+          <span><span v-if="q.s==='to'" class="tag to">Try Out no. {{ q.n }}</span> <span class="tag">{{ q.m || B.topics[q.t].name }}</span></span>
         </div>
         <div class="qtext">{{ q.q }}</div>
         <button v-for="(o,oi) in q.o" :key="oi" class="opt" :class="optClass(oi)" @click="choose(oi)">
@@ -277,7 +278,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
         </div>
         <div v-else style="margin-top:12px">
           <div class="rv" v-for="(id,i) in B.tryout.sets[keySet].ids" :key="i">
-            <div class="row small"><b>No. {{ i+1 }}</b><span v-if="B.questions[id].s==='to'" class="tag to">Try Out no. {{ B.questions[id].n }}</span><span v-if="B.questions[id].c" class="tag cek">kunci perlu dicek</span></div>
+            <div class="row small"><b>No. {{ i+1 }}</b><span v-if="B.questions[id].s==='to'" class="tag to">Try Out no. {{ B.questions[id].n }} · {{ B.questions[id].m }}</span><span v-if="B.questions[id].c" class="tag cek">kunci perlu dicek</span></div>
             <div style="margin:6px 0">{{ B.questions[id].q }}</div>
             <ol type="A" class="small" style="margin:4px 0 6px;padding-left:22px">
               <li v-for="(o,oi) in B.questions[id].o" :key="oi" :style="oi===B.questions[id].a ? 'color:var(--ok);font-weight:700' : ''">{{ o }}</li>

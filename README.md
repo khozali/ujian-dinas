@@ -3,7 +3,7 @@
 Aplikasi latihan Ujian Dinas Tingkat I (kenaikan pangkat II/d → III/a) untuk PNS Kemhan.
 Dibangun dengan **Vue 3**, sedangkan generator paketnya ditulis dengan **Node.js**.
 
-- **Paket Try Out 2026**: 9 materi sesuai jadwal ujian (UUD 1945, Pengetahuan Perkantoran, Pancasila, MINU UO, Kepegawaian, KORPRI, Organisasi UO, Bahasa Indonesia, Sejarah Indonesia), masing-masing 50 soal pilihan A–E dan 60 menit, memuat 89 soal hasil try out, lengkap dengan kunci jawaban
+- **Paket Try Out 2026**: Paket 1 berisi 89 soal asli try out (90 menit); Paket 2–10 paket baru per materi jadwal ujian (UUD 1945, Pengetahuan Perkantoran, Pancasila, MINU UO, Kepegawaian, KORPRI, Organisasi UO, Bahasa Indonesia, Sejarah Indonesia), masing-masing 50 soal A–E dan 60 menit; semua dilengkapi kunci jawaban
 - 50 paket ujian, masing-masing berisi 50 soal pilihan ganda
 - Sekitar 1.100 soal unik dari 9 materi (sesuai slide Biro Kepegawaian Setjen Kemhan)
 - Mode ujian (timer 50/75/90 menit, tanda ragu-ragu, pembahasan setelah selesai)
