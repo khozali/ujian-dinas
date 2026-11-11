@@ -1,7 +1,7 @@
 // Service worker: aplikasi bisa dibuka tanpa internet.
 // VERSION diganti otomatis oleh build.mjs setiap kali isi soal/aplikasi berubah,
 // sehingga iPhone mengunduh versi baru saat online.
-const VERSION = 'ed24e949';
+const VERSION = 'b8607057';
 const CACHE = 'udinas-' + VERSION;
 const ASSETS = ["./","./index.html","./manifest.webmanifest","./icons/apple-touch-icon.png","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-maskable-512.png"];
 

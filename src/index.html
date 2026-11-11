@@ -154,7 +154,7 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;paddi
             <div class="to-no">{{ i+1 }}</div>
             <div class="to-body">
               <b>{{ st.name }}</b>
-              <div class="muted small" v-if="st.isTryout">{{ st.ids.length }} soal asli try out · {{ st.minutes }} menit · semua materi</div>
+              <div class="muted small" v-if="st.isTryout">{{ st.ids.length }} soal try out · {{ st.minutes }} menit · semua materi</div>
               <div class="muted small" v-else>{{ st.ids.length }} soal · {{ st.minutes }} menit · paket baru</div>
               <div class="small" v-if="toResults[i]">Terakhir <b>{{ toResults[i].last }}</b> · Terbaik {{ toResults[i].best }}</div>
             </div>
